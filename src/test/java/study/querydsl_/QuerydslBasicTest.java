@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import study.querydsl_.entity.Member;
 import study.querydsl_.entity.Team;
 
-import static org.assertj.core.api.Assertions.*;
-import static study.querydsl_.entity.QMember.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static study.querydsl_.entity.QMember.member;
 
 @SpringBootTest
 @Transactional
@@ -60,6 +60,19 @@ public class QuerydslBasicTest {
                 .select(member)
                 .from(member)
                 .where(member.username.eq("member1"))
+                .fetchOne();
+
+        assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    @Test
+    public void searchAndParam() {
+        Member findMember = queryFactory
+                .selectFrom(member)
+                .where(
+                        member.username.eq("member1"),  //and -> ,
+                        member.age.eq(10)
+                )
                 .fetchOne();
 
         assertThat(findMember.getUsername()).isEqualTo("member1");
